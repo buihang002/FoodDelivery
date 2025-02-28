@@ -1,7 +1,5 @@
 function App() {
-    return (
-        <div>Q2 - Front-End app</div>
-    )
+  return <div>This is frontend</div>;
 }
 
 export default App;
