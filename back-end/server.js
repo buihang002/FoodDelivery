@@ -1,23 +1,28 @@
-const express = require("express");
-const { connect } = require("mongoose");
-const router = require("./src/router/index.js");
-const dotenv = require("dotenv");
-var cors = require("cors");
-const bodyParser = require("body-parser");
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+import bodyParser from "body-parser";
+import { connectDB } from "./config/db.js";
+import foodRouter from "./routers/foodRouter.js";
 
 const app = express();
 dotenv.config();
+
+const PORT = process.env.PORT || 9999;
+app.use("/api/food", foodRouter);
+
+app.use(express.json())
+app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use(cors());
 
-const PORT = process.env.PORT;
-const MONGODB_URI = process.env.MONGODB_URI;
-connect(MONGODB_URI);
-
 // For parsing application/json
-//app.use(express.json());
-app.use(bodyParser.json());
-app.use("/", router);
 
+connectDB();
+
+app.get("/", (req, res) => {
+  res.send("API working")
+})
 app.listen(PORT, () => {
   console.log(`server is running at http://localhost:${PORT}`);
 });
