@@ -1,31 +1,64 @@
 import foodModel from "../models/foodModel.js";
-import fs from "fs"
+import fs from "fs";
 
 const addFood = async (req, res) => {
-    console.log(req.file);
+  console.log(req.file);
 
-    if (!req.file) {
-        return res.status(400).json({ success: false, message: "No file uploaded" });
+  if (!req.file) {
+    return res
+      .status(400)
+      .json({ success: false, message: "No file uploaded" });
+  }
+
+  let image_filename = req.file.filename;
+
+  const food = new foodModel({
+    name: req.body.name,
+    description: req.body.description,
+    price: req.body.price,
+    category: req.body.category,
+    image: image_filename,
+  });
+
+  try {
+    await food.save();
+    res.json({ success: true, message: "Food Added" });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: "Error" });
+  }
+};
+
+//all food list and filter by category
+const listFood = async (req, res) => {
+  try {
+    const { category } = req.query;
+    let filter = {};
+
+    if (category) {
+      filter.category = category;
     }
 
-    let image_filename = req.file.filename;
+    const foods = await foodModel.find(filter);
+    res.json({ success: true, data: foods });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: "Error" });
+  }
+};
 
-    const food = new foodModel({
-        name: req.body.name,
-        description: req.body.description,
-        price: req.body.price,
-        category: req.body.category,
-        image: image_filename
-    });
+//all food list
+const removeFood = async (req, res) => {
+  try {
+    const food = await foodModel.find(req.body.id);
+    fs.unlink(`uploads/${food.image}`, () => {});
 
-    try {
-        await food.save();
-        res.json({ success: true, message: "Food Added" });
-    } catch (error) {
-        console.log(error);
-        res.json({ success: false, message: "Error" });
-    }
-}
+    await foodModel.findByIdAndDelete(req.body.id);
+    res.json({ success: true, message: "Food Removed" });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: "Error" });
+  }
+};
 
-
-export { addFood }
+export { addFood, listFood, removeFood };

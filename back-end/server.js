@@ -16,6 +16,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const PORT = process.env.PORT || 9999;
 app.use("/api/food", foodRouter);
+app.use("/images", express.static("uploads"));
 app.use("/api/user", userRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/order", orderRouter);
