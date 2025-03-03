@@ -1,6 +1,5 @@
-import e from "express";
-import Order from "../models/order";
-// import user
+import Order from "../models/order.js";
+import User from "../models/userModel.js";
 import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -51,7 +50,11 @@ const placeOrder = async (req, res) => {
       cancel_url: `${frontend_url}/verify?success=false?orderId=${newOrder._id}`,
     });
 
-    res.json({ success: true, session_url: session.url });
+    res.json({
+      success: true,
+      session_url: session.url,
+      message: "Order created successfully!",
+    });
   } catch (error) {
     console.log(error);
     res.json({ success: false, message: error.message });
@@ -74,4 +77,4 @@ const verifyOrder = async (req, res) => {
   }
 };
 
-module.exports = { placeOrder, verifyOrder };
+export { placeOrder, verifyOrder };
