@@ -5,6 +5,7 @@ import bodyParser from "body-parser";
 import { connectDB } from "./config/db.js";
 import foodRouter from "./routers/foodRouter.js";
 import userRouter from "./routers/userRoute.js";
+import cartRouter from "./routers/cartRouter.js";
 import "dotenv/config.js";
 const app = express();
 // dotenv.config();
@@ -15,7 +16,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const PORT = process.env.PORT || 9999;
 app.use("/api/food", foodRouter);
 app.use("/api/user", userRouter);
-
+app.use("/api/cart", cartRouter);
 // For parsing application/json
 
 connectDB();
