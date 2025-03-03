@@ -1,8 +1,9 @@
 import Order from "../models/order.js";
 import User from "../models/userModel.js";
 import Stripe from "stripe";
+import { STRIPE_SECRET_KEY } from "../config/apiKey.js";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const stripe = new Stripe(STRIPE_SECRET_KEY);
 
 //place user order for frontend
 const placeOrder = async (req, res) => {
