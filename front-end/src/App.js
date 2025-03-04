@@ -1,6 +1,6 @@
 import React from "react";
-import Navbar from "./components/Navbar/Navbar";
-import HomePage from "./pages/HomePage";
+import Navbar from "./components/Navbar/Navbar.js";
+import HomePage from "./pages/HomePage.js";
 function App() {
   return (
     <div>

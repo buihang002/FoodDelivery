@@ -1,6 +1,6 @@
 import userModel from "../models/userModel.js";
 
-// add items
+// thêm item vào cart
 
 const addToCart = async (req, res) => {
   try {
@@ -19,9 +19,9 @@ const addToCart = async (req, res) => {
   }
 };
 
-//remove items
+//xóa số lượng của 1 item
 
-const removeFromCart = async (req, res) => {
+const removeItemFromCart = async (req, res) => {
   try {
     let userDate = await userModel.findById(req.body.userId);
     let cartData = await userDate.cartData;
@@ -36,7 +36,7 @@ const removeFromCart = async (req, res) => {
   }
 };
 
-// get items
+// lấy ra item
 
 const getCart = async (req, res) => {
   try {
@@ -49,4 +49,39 @@ const getCart = async (req, res) => {
   }
 };
 
-export { addToCart, removeFromCart, getCart };
+//remove all cart items
+const removeAllCart = async (req, res) => {
+  try {
+    await userModel.findByIdAndUpdate(req.body.userId, { cartData: {} });
+    res.json({ success: true, message: "Removed All Cart Items" });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: "Error" });
+  }
+};
+// remove toàn bộ 1 sản phẩm
+const removeFromCart = async (req, res) => {
+  try {
+    let userData = await userModel.findById(req.body.userId);
+    let cartData = userData.cartData; // Không gọi như hàm ()
+
+    if (cartData.hasOwnProperty(req.body.itemId)) {
+      delete cartData[req.body.itemId];
+      await userModel.findByIdAndUpdate(req.body.userId, { cartData });
+      return res.json({ success: true, message: "Item removed from cart" });
+    }
+
+    res.json({ success: false, message: "Item not found in cart" });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: "Error" });
+  }
+};
+
+export {
+  addToCart,
+  removeItemFromCart,
+  getCart,
+  removeAllCart,
+  removeFromCart,
+};
