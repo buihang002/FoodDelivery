@@ -2,7 +2,7 @@ import React from "react";
 import Navbar from "./components/Navbar/Navbar.js";
 import { Route, Routes } from "react-router";
 import Home from "./pages/Home/Home.js";
-import Cart from "./pages/Cart/Cart.js";
+import Cart from "./pages/Cart/Cart.jsx";
 import PlaceOrder from "./pages/PlaceOrder/PlaceOrder.js";
 import Footer from "./components/Footer/Footer.js";
 
