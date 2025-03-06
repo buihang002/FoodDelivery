@@ -2,7 +2,6 @@ import express from "express";
 
 import {
   addToCart,
-  removeFromCart,
   getCart,
   removeItemFromCart,
   removeAllCart,
