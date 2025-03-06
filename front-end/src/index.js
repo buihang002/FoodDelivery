@@ -4,7 +4,7 @@ import App from "./App.js";
 import "./index.css";
 import { BrowserRouter } from "react-router-dom";
 import StoreContextProvider from "./context/StoreContext.js";
-
+import "bootstrap/dist/css/bootstrap.min.css";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
