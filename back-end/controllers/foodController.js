@@ -34,4 +34,39 @@ const addFood = async (req, res) => {
   }
 };
 
-export { addFood };
+//all food list and filter by category
+const listFood = async (req, res) => {
+  try {
+    const { category } = req.query;
+    let filter = {};
+
+    if (category) {
+      filter.category = category;
+    }
+
+    const foods = await foodModel.find(filter);
+    res.json({ success: true, data: foods });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: "Error" });
+  }
+};
+
+//all food list
+const removeFood = async (req, res) => {
+  try {
+    const food = await foodModel.findById(req.body.id);
+
+    if (food.image && food.image.public_id) {
+      await cloudinary.uploader.destroy(food.image.public_id);
+    }
+
+    await foodModel.findByIdAndDelete(req.body.id);
+    res.json({ success: true, message: "Food Removed" });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+export { addFood, listFood, removeFood };
