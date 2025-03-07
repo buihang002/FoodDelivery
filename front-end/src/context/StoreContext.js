@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import { food_list } from "../assets/assets.js";
+
 import axios from "axios";
 export const StoreContext = createContext(null);
 
@@ -15,29 +15,130 @@ const StoreContextProvider = (props) => {
       setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] + 1 }));
     }
     if (token) {
-      await axios.post(
-        url + "/api/cart/add",
-        { itemId },
-        { heders: { token } }
-      );
+      try {
+        const response = await axios.post(
+          url + "/api/cart/add",
+          { itemId },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        console.log("API Response:", response.data);
+      } catch (error) {
+        console.error("Error adding to cart:", error.response?.data || error);
+      }
     }
   };
-
-  const removeFromCart = (itemId) => {
+  const removeItemFromCart = async (itemId) => {
     setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }));
+
+    if (token) {
+      try {
+        const response = await axios.post(
+          url + "/api/cart/remove",
+          { itemId },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        console.log("API Response:", response.data);
+      } catch (error) {
+        console.error(
+          "Error removing from cart:",
+          error.response?.data || error
+        );
+      }
+    }
+  };
+  const removeFromCart = async (itemId) => {
+    setCartItems((prev) => {
+      const newCart = { ...prev };
+      delete newCart[itemId];
+      return newCart;
+    });
+    if (token) {
+      try {
+        const response = await axios.post(
+          url + "/api/cart/remove",
+          { itemId },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        console.log("API Response:", response.data);
+      } catch (error) {
+        console.error(
+          "Error removing from cart:",
+          error.response?.data || error
+        );
+      }
+    }
   };
 
   const getTotalCartAmount = () => {
     let totalAmount = 0;
-    for (const item in cartItems) {
-      if (cartItems[item] > 0) {
-        let itemInfo = food_list.find((product) => product._id === item);
-        totalAmount += itemInfo.price * cartItems[item];
+
+    if (!cartItems || Object.keys(cartItems).length === 0) {
+      return totalAmount;
+    }
+
+    for (const itemId of Object.keys(cartItems)) {
+      if (cartItems[itemId] > 0) {
+        let itemInfo = food_list.find((product) => product._id === itemId);
+
+        if (itemInfo && itemInfo.price) {
+          totalAmount += itemInfo.price * cartItems[itemId];
+        } else {
+          console.warn(`Sản phẩm không tìm thấy hoặc không có giá: ${itemId}`);
+        }
       }
     }
+
     return totalAmount;
   };
 
+  const fetchFoodList = async () => {
+    const response = await axios.get(url + "/api/food/list");
+    setFoodList(response.data.data);
+  };
+
+  const loadCartData = async () => {
+    try {
+      const response = await axios.get(url + "/api/cart/get", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      console.log("API Response:", response.data);
+
+      if (response.data.success) {
+        setCartItems(response.data.cartData || []);
+      } else {
+        console.error("Failed to load cart:", response.data.message);
+        setCartItems([]);
+      }
+    } catch (error) {
+      console.error("Error loading cart:", error);
+      setCartItems([]);
+    }
+  };
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    console.log("Stored token:", storedToken);
+
+    if (storedToken) {
+      setToken(storedToken);
+    }
+  }, []);
+  useEffect(() => {
+    const LoadData = async () => {
+      await fetchFoodList();
+
+      console.log("Token before loading cart:", token);
+
+      if (token) {
+        await loadCartData();
+      }
+    };
+
+    if (token) {
+      LoadData();
+    }
+  }, [token]);
 
   const contextValue = {
     food_list,
@@ -49,6 +150,7 @@ const StoreContextProvider = (props) => {
     token,
     setToken,
     getTotalCartAmount,
+    removeItemFromCart,
   };
 
   return (
