@@ -78,4 +78,17 @@ const verifyOrder = async (req, res) => {
   }
 };
 
-export { placeOrder, verifyOrder };
+//user orders
+const userOrders = async (req, res) => {
+  try {
+    const orders = await Order.find({ userId: req.body.userId });
+    res.status(200).json({ success: true, data: orders });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+export { placeOrder, verifyOrder, userOrders };
