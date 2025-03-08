@@ -79,10 +79,94 @@ const MyOrders = () => {
               </div>
             );
           })}
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <div>
+              <h6>Delivery address</h6>
+              <p style={{ margin: 0, padding: 0 }}>
+                {props.selectedOrder?.address.fullName}
+              </p>
+              <p
+                style={{
+                  fontSize: 14,
+                  color: "#495057",
+                  margin: 0,
+                  padding: 0,
+                }}
+              >
+                {props.selectedOrder?.address.phone}
+              </p>
+              <p
+                style={{
+                  fontSize: 14,
+                  color: "#495057",
+                  margin: 0,
+                  padding: 0,
+                }}
+              >
+                {props.selectedOrder?.address?.street},{" "}
+                {props.selectedOrder?.address?.ward},
+                {props.selectedOrder?.address?.district},{" "}
+                {props.selectedOrder?.address?.city}
+              </p>
+              <p style={{ fontSize: 12, color: "#6c757d" }}>
+                Created at:{" "}
+                {new Date(props.selectedOrder?.date).toLocaleString()}
+              </p>
+            </div>
+            <div>
+              <p
+                style={{
+                  fontSize: 14,
+                  color: "#495057",
+                  margin: 0,
+                  padding: 0,
+                }}
+              >
+                Payment status:{" "}
+                {props.selectedOrder?.payment ? "Paid" : "Not Paid"}
+              </p>
+              <p
+                style={{
+                  fontSize: 14,
+                  color: "#495057",
+                  margin: 0,
+                  padding: 0,
+                }}
+              >
+                Order status: {props.selectedOrder?.status}
+              </p>
+              <p
+                style={{
+                  fontSize: 14,
+                  color: "#495057",
+                  margin: 0,
+                  padding: 0,
+                }}
+              >
+                Subtotal:{" "}
+              </p>
+              <p
+                style={{
+                  fontSize: 14,
+                  color: "#495057",
+                  margin: 0,
+                  padding: 0,
+                }}
+              >
+                Shipping fee:
+              </p>
+              <p
+                style={{
+                  margin: 0,
+                  padding: 0,
+                  color: "tomato",
+                }}
+              >
+                Total: {props.selectedOrder?.amount}$
+              </p>
+            </div>
+          </div>
         </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={props.onHide}>Close</Button>
-        </Modal.Footer>
       </Modal>
     );
   }
