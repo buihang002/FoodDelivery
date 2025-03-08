@@ -42,6 +42,30 @@
   color: #454545;
 }
 
+.transparent-backdrop {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.cart-items-title {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr 1fr 1fr 1fr;
+  align-items: center;
+  color: grey;
+  font-size: max(1vw, 12px);
+}
+.cart-items-item {
+  margin: 10px 0px;
+  color: black;
+}
+.cart-items-item img {
+  width: 50px;
+}
+.cart hr {
+  height: 1px;
+  background-color: #e2e2e2;
+  border: none;
+}
+
 @media (max-width: 900px) {
   .my-orders-order {
     grid-template-columns: 1fr 2fr 1fr;
