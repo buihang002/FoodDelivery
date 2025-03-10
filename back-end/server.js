@@ -6,8 +6,11 @@ import { connectDB } from "./config/db.js";
 import foodRouter from "./routers/foodRouter.js";
 import userRouter from "./routers/userRoute.js";
 import cartRouter from "./routers/cartRouter.js";
-import "dotenv/config.js";
+// import "dotenv/config.js";
 import orderRouter from "./routers/orderRouter.js";
+import dotenv from "dotenv";
+dotenv.config();
+
 const app = express();
 // dotenv.config();
 app.use(cors());
