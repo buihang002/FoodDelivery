@@ -17,7 +17,11 @@ const loginUser = async (req, res) => {
       return res.json({ success: false, message: "Invalid password" });
     }
     const token = createToken(user._id);
-    res.json({ succes: true, token });
+    res.json({
+      success: true,
+      token,
+      user: { name: user.name, email: user.email, role: user.role },
+    });
   } catch (error) {
     console.log(error);
     res.json({ success: false, message: "Error" });
@@ -27,7 +31,55 @@ const loginUser = async (req, res) => {
 const createToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET);
 };
-// register
+const createUser = async (req, res) => {
+  const { name, email, password, role } = req.body;
+
+  try {
+    // Kiểm tra xem email đã tồn tại chưa
+    const exists = await userModel.findOne({ email });
+    if (exists) {
+      return res.json({ success: false, message: "User already exists" });
+    }
+
+    // Kiểm tra email hợp lệ
+    if (!validator.isEmail(email)) {
+      return res.json({ success: false, message: "Invalid email" });
+    }
+
+    // Kiểm tra độ mạnh của mật khẩu
+    if (password.length < 8) {
+      return res.json({ success: false, message: "Password too weak" });
+    }
+
+    // Mặc định vai trò là "customer" nếu không có role hoặc role không phải admin
+    const userRole = role === "admin" ? "admin" : "customer";
+
+    // Hashing mật khẩu
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Tạo người dùng mới
+    const newUser = new userModel({
+      name,
+      email,
+      password: hashedPassword,
+      role: userRole,
+    });
+
+    const user = await newUser.save();
+    const token = createToken(user._id);
+    res.json({
+      success: true,
+      token,
+      user: { name: user.name, email: user.email, role: user.role },
+    });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: "Error" });
+  }
+};
+
+// register ở homepage - gán trực tiếp custormer
 const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
   try {
@@ -65,4 +117,4 @@ const registerUser = async (req, res) => {
   }
 };
 
-export { loginUser, registerUser };
+export { loginUser, registerUser, createUser };
