@@ -100,7 +100,6 @@ export const Login = () => {
                   <Button type="submit" className="w-full bg-blue-500 border-0">
                     Đăng Nhập
                   </Button>
-                  <GoogleLogin onSuccess={handleSucess} onError={handleError} />
                 </form>
               </Card.Body>
             </Card>

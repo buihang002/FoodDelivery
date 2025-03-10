@@ -171,11 +171,15 @@ async function verify(token) {
 // Google Login
 const googleLogin = async (req, res) => {
   const { token } = req.body;
+  console.log("Token nhận được từ client:", token);
+
   try {
     const payload = await verify(token);
-    const { email, name, sub } = payload; // sub là ID của Google
+    console.log("Payload sau verify:", payload);
 
-    let account = await userModel.findOne({ email }); // Chỉ tìm theo email
+    const { email, name, sub } = payload;
+    let account = await userModel.findOne({ email });
+
     if (!account) {
       account = await userModel.create({
         email,
@@ -184,14 +188,13 @@ const googleLogin = async (req, res) => {
         role: "customer",
       });
     } else if (!account.googleId) {
-      // Nếu đã có tài khoản nhưng chưa có googleId, cập nhật thêm
       account.googleId = sub;
       await account.save();
     }
 
     return res.json({ success: true, user: account });
   } catch (error) {
-    console.log(error);
+    console.log("Lỗi verify Google token:", error);
     return res.json({ success: false, message: "Google login failed" });
   }
 };

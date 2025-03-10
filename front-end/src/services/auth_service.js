@@ -1,5 +1,5 @@
-import { Environment } from "../enviroments/enviroment";
 import axios from "axios";
+import { Environment } from "../environments/environment.js";
 
 const AuthService = {
   googleAuth: async (token) => {
