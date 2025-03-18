@@ -2,7 +2,11 @@ import React, { useContext, useEffect, useState } from "react";
 import "./LoginPopup.css";
 import { assets } from "../../assets/assets.js";
 import { StoreContext } from "../../context/StoreContext.js";
+import { GoogleLogin } from "@react-oauth/google";
+
+import AuthService from "../../services/auth_service.js";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 const LoginPopup = ({ setShowLogin }) => {
   const { url, setToken } = useContext(StoreContext);
   const [currState, setCurrState] = useState("Login");
@@ -11,6 +15,32 @@ const LoginPopup = ({ setShowLogin }) => {
     email: "",
     password: "",
   });
+  const navigate = useNavigate();
+
+  const handleSucess = async (credentialResponse) => {
+    try {
+      //gửi token đăng nhập cho backend để xác thực
+      const result = await AuthService.googleAuth(
+        credentialResponse.credential
+      );
+      if (result?.role === "customer") {
+        //cập nhật trạng thái đăng nhập
+        // dispatch(login(result));
+
+        navigate("/");
+        alert("Login Success");
+      } else {
+        alert("Không có quyền truy cập");
+      }
+    } catch (error) {
+      const data = error?.response?.data;
+      alert(data.message || "Login Failed");
+    }
+  };
+
+  const handleError = (error) => {
+    alert("Login Failed");
+  };
   const onChangeHandler = (event) => {
     const name = event.target.name;
     const value = event.target.value;
@@ -101,6 +131,7 @@ const LoginPopup = ({ setShowLogin }) => {
             <span onClick={() => setCurrState("Login")}>Login here</span>
           </p>
         )}
+        <GoogleLogin onSuccess={handleSucess} onError={handleError} />
       </form>
     </div>
   );

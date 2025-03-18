@@ -1,11 +1,39 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button, Card, Col, Container, Row, Form } from "react-bootstrap";
+import { GoogleLogin } from "@react-oauth/google";
 import styles from "./Login.module.css";
+import AuthService from "../../services/auth.service";
 // import { Form } from "react-router-dom";
 export const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
+  const handleSucess = async (credentialResponse) => {
+    try {
+      //gửi token đăng nhập cho backend để xác thực
+      const result = await AuthService.googleAuth(
+        credentialResponse.credential
+      );
+      if (result?.role === "customer") {
+        //cập nhật trạng thái đăng nhập
+        // dispatch(login(result));
+
+        navigate("/");
+        alert("Login Success");
+      } else {
+        alert("Không có quyền truy cập");
+      }
+    } catch (error) {
+      const data = error?.response?.data;
+      alert(data.message || "Login Failed");
+    }
+  };
+
+  const handleError = (error) => {
+    alert("Login Failed");
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
     // Xử lý logic đăng nhập ở đây
