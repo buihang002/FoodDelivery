@@ -8,6 +8,7 @@ import Footer from "./components/Footer/Footer.js";
 import LoginPopup from "./components/LoginPopup/LoginPopup.js";
 import Verify from "./pages/Verify/Verify.jsx";
 import MyOrders from "./pages/MyOrders/MyOrders.js";
+import ChatBox from "./components/ChatBox/ChatBox.js";
 
 function App() {
   const [showLogin, setShowLogin] = useState(false);
@@ -26,6 +27,7 @@ function App() {
         </Routes>
       </div>
       <Footer />
+      <ChatBox />
     </>
   );
 }

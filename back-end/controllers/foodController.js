@@ -55,13 +55,18 @@ const listFood = async (req, res) => {
 //all food list
 const removeFood = async (req, res) => {
   try {
-    const food = await foodModel.findById(req.body.id);
+    const { id } = req.params;
+
+    const food = await foodModel.findById(id);
+    if (!food) {
+      return res.json({ success: false, message: "Food not found" });
+    }
 
     if (food.image && food.image.public_id) {
       await cloudinary.uploader.destroy(food.image.public_id);
     }
 
-    await foodModel.findByIdAndDelete(req.body.id);
+    await foodModel.findByIdAndDelete(id);
     res.json({ success: true, message: "Food Removed" });
   } catch (error) {
     console.log(error);

@@ -91,4 +91,39 @@ const userOrders = async (req, res) => {
   }
 };
 
-export { placeOrder, verifyOrder, userOrders };
+//admin orders
+const listOrders = async (req, res) => {
+  try {
+    const orders = await Order.find({});
+    res.status(200).json({ success: true, data: orders });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Thêm function mới
+const updateOrderStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const order = await Order.findByIdAndUpdate(
+      id,
+      { status: status },
+      { new: true }
+    );
+
+    if (!order) {
+      return res.json({ success: false, message: "Order not found" });
+    }
+
+    res.json({ success: true, message: "Order status updated", data: order });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+// Export thêm function mới
+export { placeOrder, verifyOrder, userOrders, listOrders, updateOrderStatus };

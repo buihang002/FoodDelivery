@@ -10,10 +10,16 @@ import cartRouter from "./routers/cartRouter.js";
 import orderRouter from "./routers/orderRouter.js";
 import dotenv from "dotenv";
 dotenv.config();
-
+import chatRouter from "./routers/chatRouter.js";
 const app = express();
 // dotenv.config();
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:3000", "http://localhost:3001"], // Add your frontend URLs
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -22,6 +28,7 @@ app.use("/api/food", foodRouter);
 app.use("/api/user", userRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/order", orderRouter);
+app.use("/api/chat", chatRouter);
 // For parsing application/json
 
 connectDB();
