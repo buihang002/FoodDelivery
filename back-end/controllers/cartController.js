@@ -35,7 +35,6 @@ const removeItemFromCart = async (req, res) => {
     res.json({ success: false, message: "Error" });
   }
 };
-
 // lấy ra item
 
 const getCart = async (req, res) => {

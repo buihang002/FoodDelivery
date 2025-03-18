@@ -123,6 +123,7 @@ const StoreContextProvider = (props) => {
     if (storedToken) {
       setToken(storedToken);
     }
+    fetchFoodList();
   }, []);
   useEffect(() => {
     const LoadData = async () => {
