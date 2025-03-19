@@ -1,0 +1,14 @@
+.home-container {
+  max-width: 1200px; /* Giới hạn chiều rộng tối đa */
+  margin: 0 auto; /* Căn giữa nội dung */
+  padding: 20px; /* Tạo khoảng cách từ lề */
+padding-top: 0px;
+}
+.header-container {
+  /* display: flex; */
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-left: 60px;
+
+}

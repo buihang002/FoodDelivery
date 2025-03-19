@@ -170,9 +170,16 @@ async function verify(token) {
 
 // Google Login
 const googleLogin = async (req, res) => {
+  console.log("Request Body:", req.body); // Kiểm tra dữ liệu nhận từ client
+
   const { token } = req.body;
   console.log("Token nhận được từ client:", token);
-
+  if (!token) {
+    return res.json({
+      success: false,
+      message: "Token không được gửi từ client",
+    });
+  }
   try {
     const payload = await verify(token);
     console.log("Payload sau verify:", payload);

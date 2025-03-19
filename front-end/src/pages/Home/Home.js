@@ -4,11 +4,15 @@ import Header from "../../components/Header/Header.js";
 import ExploreMenu from "../../components/ExploreMenu/ExploreMenu.js";
 import FoodDisplay from "../../components/FoodDisplay/FoodDisplay.js";
 import AppDownload from "../../components/AppDownload/AppDownload.js";
+
 const Home = () => {
   const [category, setCategory] = useState("All");
+
   return (
-    <div>
-      <Header />
+    <div className="home-container">
+      <div className="header-container">
+        <Header />
+      </div>
       <ExploreMenu category={category} setCategory={setCategory} />
       <FoodDisplay category={category} />
       <AppDownload />
