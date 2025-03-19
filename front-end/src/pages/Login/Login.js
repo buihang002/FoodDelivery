@@ -1,111 +1,137 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Button, Card, Col, Container, Row, Form } from "react-bootstrap";
+import React, { useContext, useState } from "react";
+import { StoreContext } from "../../context/StoreContext.js";
 import { GoogleLogin } from "@react-oauth/google";
-import styles from "./Login.module.css";
-import AuthService from "../../services/auth.service";
-// import { Form } from "react-router-dom";
-export const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+import AuthService from "../../services/auth_service.js";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { Card, Button, Form, Container, Row, Col } from "react-bootstrap";
+import styles from "./Login.module.css"; // Import CSS
+
+const LoginPage = () => {
+  const { url, setToken } = useContext(StoreContext);
+  const [currState, setCurrState] = useState("Login");
+  const [data, setData] = useState({ name: "", email: "", password: "" });
   const navigate = useNavigate();
 
-  const handleSucess = async (credentialResponse) => {
+  const handleSuccess = async (credentialResponse) => {
     try {
-      //gửi token đăng nhập cho backend để xác thực
       const result = await AuthService.googleAuth(
         credentialResponse.credential
       );
       if (result?.role === "customer") {
-        //cập nhật trạng thái đăng nhập
-        // dispatch(login(result));
-
         navigate("/");
         alert("Login Success");
       } else {
         alert("Không có quyền truy cập");
       }
     } catch (error) {
-      const data = error?.response?.data;
-      alert(data.message || "Login Failed");
+      alert(error?.response?.data?.message || "Login Failed");
     }
   };
 
-  const handleError = (error) => {
-    alert("Login Failed");
+  const handleError = () => alert("Login Failed");
+
+  const onChangeHandler = (event) => {
+    setData({ ...data, [event.target.name]: event.target.value });
   };
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Xử lý logic đăng nhập ở đây
-    console.log("Email:", email);
-    console.log("Password:", password);
+
+  const onLogin = async (event) => {
+    event.preventDefault();
+    let newUrl = `${url}/api/user/${
+      currState === "Login" ? "login" : "register"
+    }`;
+    const response = await axios.post(newUrl, data);
+    if (response.data.success) {
+      setToken(response.data.token);
+      localStorage.setItem("token", response.data.token);
+      navigate("/");
+    } else {
+      alert(response.data.message);
+    }
   };
+
   return (
-    <div className="container mt-5">
-      <Row>
-        <Col
-          xs={12}
-          md={6}
-          className="d-flex align-items-center justify-content-center "
-        >
-          {/* Màn hình bên trái */}
-          <h1>Welcome to Tomato Shop!</h1>
-        </Col>
-        <Col xs={12} md={6}>
-          {/* Màn hình bên phải */}
-          <div className="">
-            <Card className="shadow-lg w-full max-w-md p-4  ">
+    <div className={styles.loginPage}>
+      <Container className="d-flex justify-content-center align-items-center vh-100">
+        <Row>
+          <Col>
+            <Card
+              className={`p-4 shadow-lg ${styles.loginContainer}`}
+              style={{ maxWidth: "400px", margin: "auto" }}
+            >
               <Card.Body>
-                <h2 className=" font-bold text-center  mb-4">Login</h2>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div>
-                    <label className="block text-gray-600 mb-1">Email</label>
-                    <input
+                <h2 className="text-center">{currState}</h2>
+                <Form onSubmit={onLogin}>
+                  {currState === "Sign Up" && (
+                    <Form.Group className="mb-3">
+                      <Form.Control
+                        type="text"
+                        name="name"
+                        onChange={onChangeHandler}
+                        value={data.name}
+                        placeholder="Your Name"
+                        required
+                      />
+                    </Form.Group>
+                  )}
+                  <Form.Group className="mb-3">
+                    <Form.Control
                       type="email"
-                      className="form-control"
-                      placeholder="Nhập email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      name="email"
+                      onChange={onChangeHandler}
+                      value={data.email}
+                      placeholder="Email"
                       required
                     />
-                  </div>
-
-                  <div>
-                    <label className="blockmb-1">Mật khẩu</label>
-                    <input
+                  </Form.Group>
+                  <Form.Group className="mb-3">
+                    <Form.Control
                       type="password"
-                      className="form-control"
-                      placeholder="Nhập mật khẩu"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      name="password"
+                      onChange={onChangeHandler}
+                      value={data.password}
+                      placeholder="Password"
                       required
                     />
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <label className="flex items-center">
-                      <input type="checkbox" className="mr-2" />
-                      <span className="text-sm text-gray-600">
-                        Ghi nhớ đăng nhập
-                      </span>
-                    </label>
-                    {/* <a
-                      href="#"
-                      className="text-sm text-blue-500 hover:underline"
-                    >
-                      Quên mật khẩu?
-                    </a> */}
-                  </div>
-
-                  <Button type="submit" className="w-full bg-blue-500 border-0">
-                    Đăng Nhập
+                  </Form.Group>
+                  <Button type="submit" className="w-100">
+                    {currState === "Sign Up" ? "Create account" : "Login"}
                   </Button>
-                </form>
+                </Form>
+                <div className="d-flex align-items-center justify-content-center my-3">
+                  <Form.Check type="checkbox" required className="me-2" />
+                  <small>
+                    By continuing, I agree to the terms of use and privacy
+                    policy
+                  </small>
+                </div>
+                <p className="text-center">
+                  {currState === "Login"
+                    ? "Create a new account? "
+                    : "Already have an account? "}
+                  <span
+                    className="text-primary"
+                    style={{ cursor: "pointer" }}
+                    onClick={() =>
+                      setCurrState(currState === "Login" ? "Sign Up" : "Login")
+                    }
+                  >
+                    Click here
+                  </span>
+                </p>
+                <div className="d-flex justify-content-center">
+                  <GoogleLogin
+                    onSuccess={handleSuccess}
+                    onError={handleError}
+                  />
+                </div>
               </Card.Body>
             </Card>
-          </div>
-        </Col>
-      </Row>
+          </Col>
+        </Row>
+      </Container>
     </div>
   );
 };
+
+export default LoginPage;

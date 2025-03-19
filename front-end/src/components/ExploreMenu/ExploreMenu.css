@@ -8,7 +8,12 @@
     color: #262626;
     font-weight: 500;
 }
-
+.explore-menu-description{
+    color: #747474;
+    font-size: max(1.4vw,16px);
+    padding: 0px 50px;
+    text-align: center;
+}
 .explore-menu-text{
     max-width: 60%;
     columns: #808080;

@@ -3,6 +3,7 @@ import "./Navbar.css";
 import { assets } from "../../assets/assets.js";
 import { Link, useNavigate } from "react-router-dom";
 import { StoreContext } from "../../context/StoreContext.js";
+import { Button } from "react-bootstrap";
 
 const Navbar = ({ setShowLogin }) => {
   const [menu, setMenu] = useState("home");
@@ -53,7 +54,12 @@ const Navbar = ({ setShowLogin }) => {
           <div className={getTotalCartAmount() == 0 ? "" : "dot"}></div>
         </div>
         {!token ? (
-          <button onClick={() => setShowLogin(true)}>sign in</button>
+          // <button onClick={() => setShowLogin(true)}>sign in</button>
+          <Link to="/login">
+            <Button variant="primary" className="navbar-signin">
+              Sign In
+            </Button>
+          </Link>
         ) : (
           <div className="navbar-profile">
             <img src={assets.profile_icon} alt="" />
