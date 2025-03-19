@@ -17,6 +17,7 @@ const PlaceOrder = () => {
     contry: "Vietnam",
     street: "",
   });
+  const [paymentMethod, setPaymentMethod] = useState("COD");
 
   const onChangeHandler = (event) => {
     const name = event.target.name;
@@ -39,6 +40,7 @@ const PlaceOrder = () => {
         address: data,
         items: orderItems,
         amount: getTotalCartAmount() + 2,
+        paymentMethod,
       };
       let res = await axios.post(url + "/api/order/place", orderData, {
         headers: { Authorization: `Bearer ${token}` },
@@ -65,11 +67,14 @@ const PlaceOrder = () => {
   }, [token]);
 
   return (
-    <form onSubmit={placeOrder} className="place-order">
-      <div className="place-order-left">
-        <p className="title">Delivery Information</p>
-        <div className="multi-fields">
+    <form onSubmit={placeOrder} class="place-order">
+      <div class="place-order-left">
+        <p class="title">Delivery Information</p>
+
+        <div>
+          <label htmlFor="fullName">Full Name</label>
           <input
+            id="fullName"
             required
             name="fullName"
             onChange={onChangeHandler}
@@ -78,77 +83,163 @@ const PlaceOrder = () => {
             placeholder="Full name"
           />
         </div>
-        <input
-          required
-          name="email"
-          onChange={onChangeHandler}
-          value={data.email}
-          type="email"
-          placeholder="Email address"
-        />
-        <input
-          required
-          name="city"
-          onChange={onChangeHandler}
-          value={data.city}
-          type="text"
-          placeholder="City"
-        />
-        <div className="multi-fields">
+
+        <div>
+          <label htmlFor="email">Email Address</label>
           <input
+            id="email"
             required
-            name="district"
+            name="email"
             onChange={onChangeHandler}
-            value={data.district}
-            type="text"
-            placeholder="District"
-          />
-          <input
-            required
-            name="ward"
-            onChange={onChangeHandler}
-            value={data.ward}
-            type="text"
-            placeholder="Ward"
-          />
-          <input
-            required
-            name="street"
-            onChange={onChangeHandler}
-            value={data.street}
-            type="text"
-            placeholder="Street"
+            value={data.email}
+            type="email"
+            placeholder="Email address"
           />
         </div>
-        <input
-          required
-          name="phone"
-          onChange={onChangeHandler}
-          value={data.phone}
-          type="text"
-          placeholder="Phone"
-        />
+        <div class="multi-fields">
+          <div>
+            <label htmlFor="city">City</label>
+            <input
+              id="city"
+              required
+              name="city"
+              onChange={onChangeHandler}
+              value={data.city}
+              type="text"
+              placeholder="City"
+            />
+          </div>
+          <div>
+            <label htmlFor="district">District</label>
+            <input
+              id="district"
+              required
+              name="district"
+              onChange={onChangeHandler}
+              value={data.district}
+              type="text"
+              placeholder="District"
+            />
+          </div>
+        </div>
+        <div class="multi-fields">
+          <div>
+            <label htmlFor="ward">Ward</label>
+            <input
+              id="ward"
+              required
+              name="ward"
+              onChange={onChangeHandler}
+              value={data.ward}
+              type="text"
+              placeholder="Ward"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="street">Street</label>
+            <input
+              id="street"
+              required
+              name="street"
+              onChange={onChangeHandler}
+              value={data.street}
+              type="text"
+              placeholder="Street"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label htmlFor="phone">Phone</label>
+          <input
+            id="phone"
+            required
+            name="phone"
+            onChange={onChangeHandler}
+            value={data.phone}
+            type="text"
+            placeholder="Phone"
+          />
+        </div>
       </div>
+
       <div className="place-order-right">
         <div className="cart-total">
           <h2>Cart Totals</h2>
           <div>
             <div className="cart-total-details">
               <p>Subtotal</p>
-              <p>{getTotalCartAmount()}</p>
+              <p>{getTotalCartAmount()}$</p>
             </div>
             <hr />
             <div className="cart-total-details">
               <p>Delivery Fee</p>
-              <p>{getTotalCartAmount() === 0 ? 0 : 2}</p>
+              <p>{getTotalCartAmount() === 0 ? 0 : 2}$</p>
             </div>
             <hr />
             <div className="cart-total-details">
               <b>Total</b>
-              <b>{getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + 2}</b>
+              <b>
+                {getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + 2}$
+              </b>
             </div>
           </div>
-          <button type="submit">PROCEED TO PAYMENT</button>
+
+          <div className="payment-method">
+            <p>Choose Payment Method:</p>
+            <label className="payment-option">
+              <input
+                type="radio"
+                name="paymentMethod"
+                value="COD"
+                required
+                onChange={(e) => setPaymentMethod(e.target.value)}
+              />
+              <img src="cod.png" alt="COD" className="payment-icon" />
+              Cash on Delivery
+            </label>
+
+            <label className="payment-option">
+              <input
+                type="radio"
+                name="paymentMethod"
+                value="vnpay"
+                required
+                onChange={(e) => setPaymentMethod(e.target.value)}
+              />
+              <img src="vnpay.png" alt="VNPay" className="payment-icon" />
+              VNPAY wallet
+            </label>
+
+            <label className="payment-option">
+              <input
+                type="radio"
+                name="paymentMethod"
+                value="momo"
+                required
+                onChange={(e) => setPaymentMethod(e.target.value)}
+              />
+              <img src="momo.png" alt="momo" className="payment-icon" />
+              Momo wallet
+            </label>
+
+            <label className="payment-option">
+              <input
+                type="radio"
+                name="paymentMethod"
+                value="stripe"
+                required
+                onChange={(e) => setPaymentMethod(e.target.value)}
+              />
+              <img src="stripe.png" alt="Stripe" className="payment-icon" />
+              Stripe
+            </label>
+          </div>
+
+          <button type="submit" style={{ width: "100%" }}>
+            PROCEED TO CHECKOUT
+          </button>
         </div>
       </div>
     </form>

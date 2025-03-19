@@ -6,18 +6,36 @@ import axios from "axios";
 
 const Verify = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const success = searchParams.get("success");
-  const orderId = searchParams.get("orderId");
 
   const { url } = useContext(StoreContext);
   const navigate = useNavigate();
 
   const verifyPayment = async () => {
     try {
-      const res = await axios.post(url + "/api/order/verify", {
-        success,
-        orderId,
-      });
+      //Stripe
+      const success = searchParams.get("success");
+      const orderId = searchParams.get("orderId");
+
+      //VNPay
+      const urlParams = new URLSearchParams(window.location.search);
+      const queryObject = Object.fromEntries(urlParams.entries());
+
+      let res;
+      if (queryObject.vnp_TxnRef) {
+        //VNPAY
+        res = await axios.get(`${url}/api/order/verify`, {
+          params: queryObject,
+        });
+      } else {
+        //Stripe
+        res = await axios.post(url + "/api/order/verify", {
+          success,
+          orderId,
+        });
+      }
+
+      console.log(res.data);
+
       if (res.data.success) {
         navigate("/myorders");
       } else {
