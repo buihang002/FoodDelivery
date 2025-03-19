@@ -47,7 +47,7 @@ const MyOrders = () => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div className="cart-items-title cart-items-item">
+          <div className="od-items-title od-items-item">
             <p>
               <b>Image</b>
             </p>
@@ -68,7 +68,7 @@ const MyOrders = () => {
           {props.selectedOrder?.items.map((item, index) => {
             return (
               <div key={item._id}>
-                <div className="cart-items-title cart-items-item">
+                <div className="od-items-title od-items-item">
                   <img src={item.image.url} alt="" />
                   <p>{item.name}</p>
                   <p>{item.price}$</p>
@@ -122,6 +122,17 @@ const MyOrders = () => {
                   padding: 0,
                 }}
               >
+                Payment method:{" "}
+                {props.selectedOrder?.paymentMethod?.toUpperCase()}
+              </p>
+              <p
+                style={{
+                  fontSize: 14,
+                  color: "#495057",
+                  margin: 0,
+                  padding: 0,
+                }}
+              >
                 Payment status:{" "}
                 {props.selectedOrder?.payment ? "Paid" : "Not Paid"}
               </p>
@@ -143,7 +154,7 @@ const MyOrders = () => {
                   padding: 0,
                 }}
               >
-                Subtotal:{" "}
+                Subtotal: {props.selectedOrder?.amount - 2}$
               </p>
               <p
                 style={{
@@ -153,7 +164,7 @@ const MyOrders = () => {
                   padding: 0,
                 }}
               >
-                Shipping fee:
+                Shipping fee: 2$
               </p>
               <p
                 style={{

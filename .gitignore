@@ -1,2 +1,3 @@
 node_modules/
 back-end/config/apiKey.js
+back-end/config/vnpay.js
