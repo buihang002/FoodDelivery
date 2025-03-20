@@ -62,8 +62,7 @@ const removeAllCart = async (req, res) => {
 const removeFromCart = async (req, res) => {
   try {
     let userData = await userModel.findById(req.body.userId);
-    let cartData = userData.cartData; // Không gọi như hàm ()
-
+    let cartData = userData.cartData;
     if (cartData.hasOwnProperty(req.body.itemId)) {
       delete cartData[req.body.itemId];
       await userModel.findByIdAndUpdate(req.body.userId, { cartData });

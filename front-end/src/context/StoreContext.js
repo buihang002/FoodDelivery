@@ -33,7 +33,7 @@ const StoreContextProvider = (props) => {
     if (token) {
       try {
         const response = await axios.post(
-          url + "/api/cart/remove",
+          url + "/api/cart/removeItem",
           { itemId },
           { headers: { Authorization: `Bearer ${token}` } }
         );
