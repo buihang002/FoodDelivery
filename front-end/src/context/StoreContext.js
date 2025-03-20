@@ -8,6 +8,7 @@ const StoreContextProvider = (props) => {
   const url = "http://localhost:9999";
   const [token, setToken] = useState("");
   const [food_list, setFoodList] = useState([]);
+  const [categories, setCategories] = useState([]);
   const addToCart = async (itemId) => {
     if (!cartItems[itemId]) {
       setCartItems((prev) => ({ ...prev, [itemId]: 1 }));
@@ -92,8 +93,32 @@ const StoreContextProvider = (props) => {
   };
 
   const fetchFoodList = async () => {
-    const response = await axios.get(url + "/api/food/list");
-    setFoodList(response.data.data);
+    try {
+      const response = await axios.get(url + "/api/food/list");
+
+      if (response.data && response.data.success && response.data.data) {
+        setFoodList(response.data.data);
+
+        // Extract unique categories
+        if (response.data.data.length > 0) {
+          const uniqueCategories = [
+            ...new Set(
+              response.data.data.map((item) => item.category).filter(Boolean)
+            ),
+          ];
+          setCategories(uniqueCategories);
+        }
+      } else {
+        console.error(
+          "Failed to fetch food list:",
+          response.data?.message || "Unknown error"
+        );
+        setFoodList([]);
+      }
+    } catch (error) {
+      console.error("Error fetching food list:", error);
+      setFoodList([]);
+    }
   };
 
   const loadCartData = async () => {
@@ -152,6 +177,7 @@ const StoreContextProvider = (props) => {
     setToken,
     getTotalCartAmount,
     removeItemFromCart,
+    categories,
   };
 
   return (
