@@ -154,7 +154,7 @@ const MyOrders = () => {
                   padding: 0,
                 }}
               >
-                Subtotal: {props.selectedOrder?.amount - 2}$
+                Subtotal: {(props.selectedOrder?.amount - 2).toFixed(0, 2)}$
               </p>
               <p
                 style={{
