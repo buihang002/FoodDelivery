@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import "./UsersList.css"; // Tạo file CSS tương ứng
+import "./UsersList.css"; 
 
 const UsersList = () => {
   const [users, setUsers] = useState([]);
