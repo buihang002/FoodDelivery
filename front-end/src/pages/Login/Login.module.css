@@ -1,0 +1,28 @@
+.loginPage {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  background: url("https://images.pexels.com/photos/260922/pexels-photo-260922.jpeg") no-repeat center center/cover;
+  padding-right: 5%; /* Giữ khoảng cách với mép phải */
+}
+
+.loginContainer {
+  background: rgba(255, 255, 255, 0.2); /* Nền trong suốt */
+  backdrop-filter: blur(10px); /* Làm mờ nền phía sau */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transform: translateX(50px);
+  animation: fadeIn 0.8s ease-out forwards;
+  width: 350px; /* Định kích thước form */
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
